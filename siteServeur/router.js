@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 const twig = require("twig");
 const  mongoose = require("mongoose");
-const livreSchema= require("./models/livres.modele");
+const livreSchema = require("./models/livres.modele");
 const { response } = require("express");
 
 router.get("/", (requete, reponse) =>{
@@ -39,17 +39,51 @@ router.post("/livres", (requete, reponse) =>{
     })
 });
 
-//affichage du livre 
+//affichage du livre by id
 router.get("/livres/:id", (requete, reponse) =>{
     livreSchema.findById(requete.params.id)
     .exec()
     .then(livre =>{
-         reponse.render("livres/livre.html.twig",{livre : livre})
+         reponse.render("livres/livre.html.twig",{livre : livre, isModification: false})
     })
     .catch(error =>{
           console.log(error)
     })
 })
+
+//modification d'un livre(formulaire)
+router.get("/livres/modification/:id", (requete, reponse) =>{
+    livreSchema.findById(requete.params.id)
+    .exec()
+    .then(livre =>{
+         reponse.render("livres/livre.html.twig",{livre : livre, isModification: true})
+    })
+    .catch(error =>{
+          console.log(error)
+    })
+})
+
+router.post("/livres/modificationServer", (requete,reponse)=>{
+    const livreUpdate = {
+        nom : requete.body.titre,
+        auteur : requete.body.auteur,
+        pages : requete.body.pages,
+        description : requete.body.description
+    }
+    livreSchema.update({_id:requete.body.identifiant}, livreUpdate)
+    .exec()
+    .then(resultat =>{
+        requete.session.message = {
+            type : 'success',
+            contenu : 'Modificaition effectuée'
+        }
+        reponse.redirect("/livres");
+    })
+    .catch(error => {
+        console.log(error);
+    })
+})
+
 
 //suppression du livre
 router.post("/livres/delete/:id", (requete, reponse) =>{

@@ -2,21 +2,50 @@
 {% block titre %} {{livre.nom}} {% endblock %}
 
 {% block contenu %}
-<div class="row m-2">
+        {% if isModification %}
+            <form method="POST" action="/livres/modificationServer">
+                <div class="row m-2">
+                    <div class="col-6">
+                        <h2>Informations : </h2>
+                        <div class="form-group">
+                            <label for="titre">Titre</label>
+                            <input type="text" class="form-control" id="titre" name="titre" value="{{livre.nom}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="auteur">Auteur</label>
+                            <input type="text" class="form-control" id="auteur" name="auteur"  value="{{livre.auteur}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="pages">Page</label>
+                            <input type="number" class="form-control" id="pages" name="pages"  value="{{livre.pages}}">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <h2> Résumé: </h2>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control"  id="description" name="description" rows="3">{{livre.description}}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="identifiant" value="{{livre._id}}">
+                <input type="submit" class="btn btn-warning w-100" value="Valider">
+            </form>
+        {% else %}
+        <div class="row m-2">
+            <div class="col-6">
+                <h2>Informations : </h2>
+                <div>Auteur : {{livre.auteur}}</div>
+                <div>Nombre de pages : {{livre.pages}} </div>
+                <img src="https://picsum.photos/200/200">
+            </div>
 
-    <div class="col-6">
-        <h2>Informations : </h2>
-        <div>Auteur : {{livre.auteur}}</div>
-        <div>Nombre de pages : {{livre.pages}} </div>
-        <img src="https://picsum.photos/200/200">
-    </div>
-
-     <div class="col-6">
-        <h2>Résumé : </h2>
-        <div>
-            {{livre.description}}
-        </div>
-    </div>
-
-</div>
+            <div class="col-6">
+                <h2>Résumé : </h2>
+                <div>
+                    {{livre.description}}
+                </div>
+            </div>
+        </div>  
+    {% endif %}
 {% endblock %}
