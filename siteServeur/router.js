@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const twig = require("twig");
+const livreSchema= require("./models/livres.modele")
 
 
 router.get("/", (requete, reponse) =>{
@@ -8,7 +9,25 @@ router.get("/", (requete, reponse) =>{
 })
 
 router.get("/livres", (requete, reponse) =>{
-    reponse.render("livres/liste.html.twig")
+    livreSchema.find()
+    .exec()
+    .then(livres =>{
+        console.log(livres)
+        reponse.render("livres/liste.html.twig", {liste : livres})
+    })
+    .catch();
+  
+})
+
+router.get("/livres/:id", (requete, reponse) =>{
+    livreSchema.findById(requete.params.id)
+    .exec()
+    .then(livre =>{
+         reponse.render("livres/livre.html.twig",{livre : livre})
+    })
+    .catch(error =>{
+          console.log(error)
+    })
 })
 
 

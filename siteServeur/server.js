@@ -1,7 +1,10 @@
-var express = require("express");
-var server = express();
-var morgan = require("morgan");
-var router = require("./router");
+const express = require("express");
+const server = express();
+const morgan = require("morgan");
+const router = require("./router");
+const mongoose = require("mongoose");
+
+mongoose.connect("mongodb://localhost/biblio", {useNewUrlParser:true, useUnifiedTopology: true});
 
 server.use(express.static("public"));
 server.use(morgan("dev"));

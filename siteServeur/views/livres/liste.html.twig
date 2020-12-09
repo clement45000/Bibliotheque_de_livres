@@ -12,14 +12,45 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>L'algorithmique selon H2PROG</td>
-            <td>Auteur</td>
+    {% for livre in liste %}
+           <tr>
+            <td><a href="/livres/{{livre._id}}">{{livre.nom}}</a></td>
+            <td>{{livre.auteur}}</td>
+            <td>{{livre.pages}}</td>
+            <td><a href="" class="btn btn-warning">Modifier</td>
+            <td><a href="" class="btn btn-danger">Supprimer</td>
+        </tr>
+    {% endfor %}
+        {# <tr>
+            <td><a href="/livres/L'algorithmique selon H2PROG">L'algorithmique selon H2PROG</a></td>
+            <td>Mathieu Gaston</td>
             <td>200</td>
             <td><a href="" class="btn btn-warning">Modifier</td>
-            <td><a href="" class="btn btn-warning">Supprimer</td>
+            <td><a href="" class="btn btn-danger">Supprimer</td>
         </tr>
-        
+           <tr>
+            <td><a href="/livres/La france du 19 ème">La france du 19 ème</a></td>
+            <td>Albert Patrick</td>
+            <td>500</td>
+            <td><a href="" class="btn btn-warning">Modifier</td>
+            <td><a href="" class="btn btn-danger">Supprimer</td>
+        </tr>
+           <tr>
+            <td><a href="/livres/Le monde des animaux">Le monde des animaux</a></td>
+            <td>Marc Merlin</td>
+            <td>250</td>
+            <td><a href="" class="btn btn-warning">Modifier</td>
+            <td><a href="" class="btn btn-danger">Supprimer</td>
+        </tr>
+        </tr>
+           <tr>
+            <td><a href="/livres/Le virus d'Asie">Le virus d'Asie</a></td>
+            <td>Tya Milo</td>
+            <td>120</td>
+            <td><a href="" class="btn btn-warning">Modifier</td>
+            <td><a href="" class="btn btn-danger">Supprimer</td>
+        </tr> #}
     </tbody>
 </table>
+<a href="" class= "btn btn-success d-block">Ajouter</a>
 {% endblock %}
