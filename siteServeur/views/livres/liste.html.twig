@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+{% block titre %} Page listant les livres{% endblock %}
+
+{% block contenu %}
+ <table class="table text-center mt-5 monTalbeau" id="tableauLivres">
+    <thead>
+        <tr class="table-dark">
+            <th>Titre</th>
+            <th>Auteur</th>
+            <th>Nombre de pages</th>
+            <th colspan="2">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>L'algorithmique selon H2PROG</td>
+            <td>Auteur</td>
+            <td>200</td>
+            <td><a href="" class="btn btn-warning">Modifier</td>
+            <td><a href="" class="btn btn-warning">Supprimer</td>
+        </tr>
+        
+    </tbody>
+</table>
+{% endblock %}
