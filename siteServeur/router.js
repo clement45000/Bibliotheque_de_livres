@@ -4,7 +4,7 @@ const twig = require("twig");
 const  mongoose = require("mongoose");
 const livreSchema = require("./models/livres.modele");
 const { response } = require("express");
-
+const fs = require("fs");
 const multer = require("multer");
 
 // destination et filename (nom du fichier)
@@ -125,22 +125,55 @@ router.post("/livres/modificationServer", (requete,reponse)=>{
     })
 })
 
+router.post("/livres/updateImage", upload.single("image"), (requete, reponse) => {  
+    var livre = livreSchema.findById(requete.body.identifiant)
+    .select("image")
+    .exec()
+    .then(livre => {
+        fs.unlink("./public/images/"+livre.image, error => {
+            console.log(error);
+        })
+     });
+        const livreUpdate = {
+            image : requete.file.path.substring(14)
+        }
+        livreSchema.update({_id:requete.body.identifiant}, livreUpdate)
+        .exec()
+        .then(resultat =>{
+            reponse.redirect("/livres/modification/" + requete.body.identifiant)
+        })
+        .catch(error => {
+            console.log(error);
+        })
+})
 
 //suppression du livre
 router.post("/livres/delete/:id", (requete, reponse) =>{
-    livreSchema.remove({_id:requete.params.id})
+    var livre = livreSchema.findById(requete.params.id)
+    .select("image")
     .exec()
-    .then(resultat =>{
-        requete.session.message = {
-            type : 'success',
-            contenu : 'Suppression effectuée'
-        }
-        reponse.redirect("/livres");
+    .then(livre =>{
+        fs.unlink("./public/images/" + livre.image, error =>{
+            console.log(error);
+        })
+        livreSchema.remove({_id:requete.params.id})
+        .exec()
+        .then(resultat =>{
+            requete.session.message = {
+                type : 'success',
+                contenu : 'Suppression effectuée'
+            }
+            reponse.redirect("/livres");
+        })
+        .catch(error => {
+             console.log(error);
+         })
     })
     .catch(error => {
         console.log(error);
     })
-})
+    
+});
 
 //gestion des erreurs
 router.use((requete,reponse, suite) => {

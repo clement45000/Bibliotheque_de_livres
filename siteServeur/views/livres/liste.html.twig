@@ -12,6 +12,7 @@
 <table class="table text-center mt-5 monTalbeau" id="tableauLivres">
     <thead>
         <tr class="table-dark">
+            <th>Images</th>
             <th>Titre</th>
             <th>Auteur</th>
             <th>Nombre de pages</th>
@@ -21,11 +22,12 @@
     <tbody>
     {% for livre in liste %}
            <tr>
-            <td><a href="/livres/{{livre._id}}">{{livre.nom}}</a></td>
-            <td>{{livre.auteur}}</td>
-            <td>{{livre.pages}}</td>
-            <td><a href="/livres/modification/{{livre._id}}" class="btn btn-warning">Modifier</td>
-            <td>
+            <td class="align-middle"><img src="images/{{livre.image}}" width="60px"> </td>
+            <td class="align-middle" ><a href="/livres/{{livre._id}}">{{livre.nom}}</a></td>
+            <td class="align-middle">{{livre.auteur}}</td>
+            <td class="align-middle">{{livre.pages}}</td>
+            <td class="align-middle"><a href="/livres/modification/{{livre._id}}" class="btn btn-warning">Modifier</td>
+            <td class="align-middle">
                 <form method="POST" action="/livres/delete/{{livre._id}}" onSubmit="return confirm('Voulez-vous vraimentsupprimer le livre');">
                     <button class="btn btn-danger" type="submit">Supprimer</button>
                 </form>
@@ -63,5 +65,6 @@
         <button  class="btn btn-primary" type="submit" >Valider</button>
     </fieldset>
 </form>
+
 <script src="/javascript/ajoutLivre.js"></script>
 {% endblock %}
