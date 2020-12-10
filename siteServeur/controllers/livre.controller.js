@@ -1,57 +1,17 @@
-var express = require("express");
-var router = express.Router();
-const twig = require("twig");
 const  mongoose = require("mongoose");
-const livreSchema = require("./models/livres.modele");
-const { response } = require("express");
+const livreSchema = require("../models/livres.modele");
 const fs = require("fs");
-const multer = require("multer");
 
-// destination et filename (nom du fichier)
-// details https://www.npmjs.com/package/multer
-const storage = multer.diskStorage({
-    destination : (requete, file, cb)=> {
-        cb(null, "./public/images")
-    },
-    filename : (requete, file, cb)=>{
-        var date = new Date().toLocaleDateString();
-        cb(null, date+"_"+Math.round(Math.random() * 10000)+"_"+file.originalname)
-    }
-});
-
-const fileFilter = (requete, file, cb) =>{
-    if(file.mimetype === "image/jpeg" || file.mimetype === "image/png"){
-        cb(null, true)
-    } else{
-        cb(new Error("l'image ne correspond n'est pas accepté"), false)
-    }
-}
-
-const upload = multer({
-    storage : storage,
-    limits : {
-        filSize : 1024 * 1024 * 5
-    },
-    fileFilter : fileFilter
-})
-
-
-router.get("/", (requete, reponse) =>{
-    reponse.render("accueil.html.twig")
-})
-
-//recuperation du livre
-router.get("/livres", (requete, reponse) =>{
+exports.livres_affichages = (requete, reponse) =>{
     livreSchema.find()
     .exec()
     .then(livres =>{
         reponse.render("livres/liste.html.twig", {liste : livres,message : reponse.locals.message})
     })
     .catch();
-})
+}
 
-// Sauvegarde d'un livre via le formulaire
-router.post("/livres", upload.single("image"), (requete, reponse) =>{
+exports.livres_ajout = (requete, reponse) =>{
     const livre = new livreSchema({
         _id: new mongoose.Types.ObjectId(),
         nom: requete.body.titre,
@@ -69,10 +29,9 @@ router.post("/livres", upload.single("image"), (requete, reponse) =>{
     .catch(error =>{
         console.log(error);
     })
-});
+}
 
-//affichage du livre by id
-router.get("/livres/:id", (requete, reponse) =>{
+exports.livre_affichage =  (requete, reponse) =>{
     livreSchema.findById(requete.params.id)
     .exec()
     .then(livre =>{
@@ -81,10 +40,9 @@ router.get("/livres/:id", (requete, reponse) =>{
     .catch(error =>{
           console.log(error)
     })
-})
+}
 
-//modification d'un livre(formulaire)
-router.get("/livres/modification/:id", (requete, reponse) =>{
+exports.livre_modification = (requete, reponse) =>{
     livreSchema.findById(requete.params.id)
     .exec()
     .then(livre =>{
@@ -93,9 +51,9 @@ router.get("/livres/modification/:id", (requete, reponse) =>{
     .catch(error =>{
           console.log(error)
     })
-})
+}
 
-router.post("/livres/modificationServer", (requete,reponse)=>{
+exports.livre_modification_server = (requete,reponse)=>{
     const livreUpdate = {
         nom : requete.body.titre,
         auteur : requete.body.auteur,
@@ -123,9 +81,9 @@ router.post("/livres/modificationServer", (requete,reponse)=>{
         }
         reponse.redirect("/livres");
     })
-})
+}
 
-router.post("/livres/updateImage", upload.single("image"), (requete, reponse) => {  
+exports.livre_modification_server_image = (requete, reponse) => {  
     var livre = livreSchema.findById(requete.body.identifiant)
     .select("image")
     .exec()
@@ -145,10 +103,9 @@ router.post("/livres/updateImage", upload.single("image"), (requete, reponse) =>
         .catch(error => {
             console.log(error);
         })
-})
+}
 
-//suppression du livre
-router.post("/livres/delete/:id", (requete, reponse) =>{
+exports.livre_suppression = (requete, reponse) => {
     var livre = livreSchema.findById(requete.params.id)
     .select("image")
     .exec()
@@ -173,18 +130,4 @@ router.post("/livres/delete/:id", (requete, reponse) =>{
         console.log(error);
     })
     
-});
-
-//gestion des erreurs
-router.use((requete,reponse, suite) => {
-    const error = new Error("Page non trouvée");
-    error.status = 404;
-    suite(error);
-})
-
-router.use((error,requete,reponse) => {
-    reponse.status(error.status || 500);
-    reponse.end(error.message);
-})
-
-module.exports = router;
+}

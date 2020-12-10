@@ -1,7 +1,8 @@
 const express = require("express");
 const server = express();
 const morgan = require("morgan");
-const router = require("./router");
+const routerLivre = require("./routeurs/livres.router");
+const routerGlobal = require("./routeurs/global.router");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const session = require("express-session");
@@ -31,7 +32,8 @@ server.use((requete, reponse, suite) =>{
     suite(); //permet de poursuivre
 })
 
-server.use("/", router); //route de redirection
+server.use("/", routerLivre); //route de redirection
+server.use("/", routerGlobal); //route de redirection
 
 server.listen(3000); //port de l'écoute (localhost: 3000)
 
