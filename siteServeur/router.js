@@ -5,6 +5,37 @@ const  mongoose = require("mongoose");
 const livreSchema = require("./models/livres.modele");
 const { response } = require("express");
 
+const multer = require("multer");
+
+// destination et filename (nom du fichier)
+// details https://www.npmjs.com/package/multer
+const storage = multer.diskStorage({
+    destination : (requete, file, cb)=> {
+        cb(null, "./public/images")
+    },
+    filename : (requete, file, cb)=>{
+        var date = new Date().toLocaleDateString();
+        cb(null, date+"_"+Math.round(Math.random() * 10000)+"_"+file.originalname)
+    }
+});
+
+const fileFilter = (requete, file, cb) =>{
+    if(file.mimetype === "image/jpeg" || file.mimetype === "image/png"){
+        cb(null, true)
+    } else{
+        cb(new Error("l'image ne correspond n'est pas accepté"), false)
+    }
+}
+
+const upload = multer({
+    storage : storage,
+    limits : {
+        filSize : 1024 * 1024 * 5
+    },
+    fileFilter : fileFilter
+})
+
+
 router.get("/", (requete, reponse) =>{
     reponse.render("accueil.html.twig")
 })
@@ -20,13 +51,14 @@ router.get("/livres", (requete, reponse) =>{
 })
 
 // Sauvegarde d'un livre via le formulaire
-router.post("/livres", (requete, reponse) =>{
+router.post("/livres", upload.single("image"), (requete, reponse) =>{
     const livre = new livreSchema({
         _id: new mongoose.Types.ObjectId(),
         nom: requete.body.titre,
         auteur: requete.body.titre,
         pages: requete.body.pages,
-        description: requete.body.description
+        description: requete.body.description,
+        image : requete.file.path.substring(14)
     });
     livre.save()
     .then(resultat =>{
@@ -73,6 +105,10 @@ router.post("/livres/modificationServer", (requete,reponse)=>{
     livreSchema.update({_id:requete.body.identifiant}, livreUpdate)
     .exec()
     .then(resultat =>{
+        if (resultat.nModified <1){
+            throw new Error("requete de modification echoué");
+        } 
+        console.log(resultat);
         requete.session.message = {
             type : 'success',
             contenu : 'Modificaition effectuée'
@@ -81,6 +117,11 @@ router.post("/livres/modificationServer", (requete,reponse)=>{
     })
     .catch(error => {
         console.log(error);
+        requete.session.message = {
+            type : 'danger',
+            contenu : error.message
+        }
+        reponse.redirect("/livres");
     })
 })
 
