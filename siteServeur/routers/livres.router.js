@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
     },
     filename : (requete, file, cb)=>{
         var date = new Date().toLocaleDateString();
-        cb(null, date+"_"+Math.round(Math.random() * 10000)+"_"+file.originalname)
+        cb(null, date + "_" + Math.round(Math.random() * 10000) + "_" + file.originalname)
     }
 });
 
@@ -33,12 +33,12 @@ const upload = multer({
 })
 
 
-router.get("/livres", livreController.livres_affichages)
-router.post("/livres", upload.single("image"), livreController.livres_ajout);
-router.get("/livres/:id", livreController.livre_affichage);
-router.get("/livres/modification/:id", livreController.livre_modification);
-router.post("/livres/modificationServer", livreController.livre_modification_server);
-router.post("/livres/updateImage", upload.single("image"), livreController.livre_modification_server_image);
-router.post("/livres/delete/:id", livreController.livre_suppression);
+router.get("/", livreController.livres_affichage)
+router.post("/", upload.single("image"), livreController.livres_ajout);
+router.get("/:id", livreController.livre_affichage);
+router.get("/modification/:id", livreController.livre_modification);
+router.post("/modificationServer", livreController.livre_modification_server);
+router.post("/updateImage", upload.single("image"), livreController.livre_modification_server_image);
+router.post("/delete/:id", livreController.livre_suppression);
 
 module.exports = router;

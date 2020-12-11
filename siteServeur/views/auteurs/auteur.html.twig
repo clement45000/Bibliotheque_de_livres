@@ -1,0 +1,62 @@
+{% extends "base.html.twig" %}
+
+{% block titre %} Auteur : {{auteur.nom}} - {{auteur.prenom}}{% endblock %}
+{% block contenu %} 
+{% if isModification == true %}
+<div>HEY BRO</div>
+{% else %}
+{# {% if isModification %}
+<form id="ajoutForm" class="d-none" method ="POST" action="">
+        <fieldset>
+            <legend>Modification d'un auteur</legend>
+            <div class="form-group">
+                <label for="titre">Prenom</label>
+                <input type="text" class="form-control" id="prenom" name="prenom" value="{{auteur.prenom}}">
+            </div>
+            <div class="form-group">
+                <label for="titre">Nom</label>
+                <input type="text" class="form-control" id="nom" name="nom" value="{{auteur.nom}}">
+            </div>
+            <div class="form-group">
+                <label for="pages">Age</label>
+                <input type="number" class="form-control" id="age" name="age" value="{{auteur.age}}">
+            </div>
+              <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="sexe" name="sexe"
+                {% if auteur.sexe %} checked {% endif %}
+                >
+                <label class="form-check-label" for="exempleCheck1">Homme</label>
+            </div>
+            <input type="hidden" name="identifiant" value="{{auteur._id}}">
+            <button class="btn btn-primary" type="submit">Valider</button>
+        </fieldset>
+    </form>
+{% else %} #}
+
+    <h2>Nom : {{auteur.nom}}</h2>
+    <h2>Prenom : {{auteur.prenom}}</h2>
+    <div>Age : {{auteur.age}}</div>
+    <div>Sexe :
+        {% if auteur.sexe %}
+            Homme
+        {% else %}
+            Femme
+        {% endif %}
+    </div>
+    <h2>Livres</h2>
+    <div class="row">
+    {% for livre in auteur.livres %}
+        <div class="col-6">
+            <div class="row">
+                 <div class="col-6">
+                    <img src="/images/{{livre.image}}">
+                 </div>
+                  <div class="col-6">
+                    <div> Titre : <a href="/livres/{{livre._id}}">{{livre.nom}}</div>
+                    <div> Nombre de pages: {{livre.pages}}</div>
+                 </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

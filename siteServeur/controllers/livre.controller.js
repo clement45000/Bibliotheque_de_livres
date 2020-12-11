@@ -1,21 +1,37 @@
-const  mongoose = require("mongoose");
+const mongoose = require("mongoose");
 const livreSchema = require("../models/livres.modele");
+const auteurSchema = require("../models/auteurs.modele");
 const fs = require("fs");
+const { populate } = require("../models/livres.modele");
 
-exports.livres_affichages = (requete, reponse) =>{
-    livreSchema.find()
+exports.livres_affichage = (requete, reponse) =>{
+    auteurSchema.find()
     .exec()
-    .then(livres =>{
-        reponse.render("livres/liste.html.twig", {liste : livres,message : reponse.locals.message})
+    .then(auteurs => {
+        livreSchema.find()
+            .populate("auteur")
+            .exec()
+            .then(livres => {
+                reponse.render("livres/liste.html.twig", {
+                    liste : livres, 
+                    auteurs : auteurs, 
+                    message : reponse.locals.message
+                })
+            })
+            .catch(error => {
+                console.log(error);
+            });
     })
-    .catch();
+    .catch(error => {
+        console.log(error);
+    });
 }
 
 exports.livres_ajout = (requete, reponse) =>{
     const livre = new livreSchema({
         _id: new mongoose.Types.ObjectId(),
         nom: requete.body.titre,
-        auteur: requete.body.titre,
+        auteur: requete.body.auteur,
         pages: requete.body.pages,
         description: requete.body.description,
         image : requete.file.path.substring(14)
@@ -33,6 +49,7 @@ exports.livres_ajout = (requete, reponse) =>{
 
 exports.livre_affichage =  (requete, reponse) =>{
     livreSchema.findById(requete.params.id)
+    .populate("auteur")
     .exec()
     .then(livre =>{
          reponse.render("livres/livre.html.twig",{livre : livre, isModification: false})
@@ -43,13 +60,25 @@ exports.livre_affichage =  (requete, reponse) =>{
 }
 
 exports.livre_modification = (requete, reponse) =>{
-    livreSchema.findById(requete.params.id)
+    auteurSchema.find()
     .exec()
-    .then(livre =>{
-         reponse.render("livres/livre.html.twig",{livre : livre, isModification: true})
+    .then(auteurs =>{
+       livreSchema.findById(requete.params.id)
+        .populate("auteur")
+        .exec()
+        .then(livre =>{
+            reponse.render("livres/livre.html.twig",{
+                livre : livre, 
+                auteurs: auteurs, 
+                isModification: true
+            })
+        })
+        .catch(error =>{
+          console.log(error)
+        })   
     })
     .catch(error =>{
-          console.log(error)
+        console.log(error);
     })
 }
 
