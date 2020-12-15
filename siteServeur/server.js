@@ -35,6 +35,7 @@ server.use((requete, reponse, suite) =>{
 
 server.use("/livres/", routerLivre); //route de redirection
 server.use("/auteurs/", routerAuteur); //route de redirection
+
 server.use("/", routerGlobal); //route de redirection
 
 server.listen(3000); //port de l'écoute (localhost: 3000)

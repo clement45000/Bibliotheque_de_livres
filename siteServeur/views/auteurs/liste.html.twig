@@ -18,11 +18,11 @@
             <td class="align-middle">{{auteur.nom}}</td>
             <td class="align-middle">{{auteur.livres|length}}</td>
             <td class="align-middle"><a href="/auteurs/modification/{{auteur._id}}" class="btn btn-warning">Modifier</a></td>
-                    <td class="align-middle">
-                        <form method="POST" action="/auteurs/delete/{{auteur._id}}" onSubmit="return confirm('Voulez-vous vraiment supprimer l\'auteur ?');">
-                            <button class="btn btn-danger" type="submit">Supprimer </button>
-                        </form>
-                    </td>
+            <td class="align-middle">
+                <form method="POST" action="/auteurs/delete/{{auteur._id}}" onSubmit="return confirm('Voulez-vous vraiment supprimer l\'auteur ?');">
+                    <button class="btn btn-danger" type="submit">Supprimer </button>
+                </form>
+            </td>
         </tr>
 
         {% endfor %}
